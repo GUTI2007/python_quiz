@@ -208,31 +208,25 @@ class AudioManager {
   }
 }
 
-// 3. SISTEMA DE RANKING Y PERSISTENCIA (LocalStorage + Semillas SENA)
+// 3. SISTEMA DE RANKING Y PERSISTENCIA (Inicia en Cero)
 class RankingManager {
   constructor() {
-    this.storageKey = 'sena_tree_quiz_leaderboard';
-    this.initialRanking = [
-      { name: "Samuel Gutierrez", avatar: "🌲", score: 1420, correct: 10, time: 38, date: "2026-09-08" },
-      { name: "Henry Caballero", avatar: "⚡", score: 1350, correct: 10, time: 44, date: "2026-09-08" },
-      { name: "Juan José Gallego", avatar: "🤖", score: 1280, correct: 9, time: 49, date: "2026-09-09" },
-      { name: "Alexis Gómez", avatar: "🎓", score: 1190, correct: 9, time: 54, date: "2026-09-09" },
-      { name: "Emanuel Henao", avatar: "🏆", score: 1120, correct: 8, time: 58, date: "2026-09-09" },
-      { name: "Martha Ester (Profe)", avatar: "🌟", score: 1500, correct: 10, time: 30, date: "2026-09-07" }
-    ];
+    this.storageKey = 'sena_tree_quiz_scores_v2';
+    // Limpiar claves antiguas para asegurar inicio completamente desde cero
+    try {
+      localStorage.removeItem('sena_tree_quiz_leaderboard');
+      localStorage.removeItem('sena_tree_quiz_scores_v1');
+    } catch (e) {}
   }
 
   getScores() {
     try {
       const data = localStorage.getItem(this.storageKey);
-      if (!data) {
-        this.saveScores(this.initialRanking);
-        return [...this.initialRanking];
-      }
+      if (!data) return [];
       return JSON.parse(data);
     } catch (e) {
       console.warn("Error reading ranking:", e);
-      return [...this.initialRanking];
+      return [];
     }
   }
 
@@ -242,6 +236,12 @@ class RankingManager {
     } catch (e) {
       console.warn("Error saving ranking:", e);
     }
+  }
+
+  clearScores() {
+    try {
+      localStorage.removeItem(this.storageKey);
+    } catch (e) {}
   }
 
   addEntry(player) {
@@ -419,6 +419,18 @@ class QuizApp {
       this.dom.soundIcon.textContent = enabled ? '🔊' : '🔇';
       this.showToast(enabled ? 'Sonido activado' : 'Sonido silenciado');
     });
+
+    // Reiniciar ranking a 0
+    const resetBtn = document.getElementById('reset-leaderboard-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de que deseas reiniciar todos los puntajes a cero?')) {
+          this.ranking.clearScores();
+          this.renderLeaderboard();
+          this.showToast('🗑️ Puntajes reiniciados a cero');
+        }
+      });
+    }
   }
 
   startQuiz() {
@@ -717,6 +729,19 @@ class QuizApp {
   // Renderizar la tabla de posiciones
   renderLeaderboard(currentEntry = null) {
     const scores = this.ranking.getScores();
+
+    // Si la tabla está en cero, mostrar estado vacío elegante
+    if (!scores || scores.length === 0) {
+      this.dom.podiumWrapper.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.2rem 1rem; color: var(--text-muted); background: rgba(255,255,255,0.02); border-radius: var(--radius-md); border: 1px dashed var(--border-subtle);">
+          <div style="font-size: 2.3rem; margin-bottom: 0.4rem;">🌱</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: #fff;">¡Tabla de posiciones en 0!</div>
+          <div style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-secondary);">Completa el quiz para ser el primer aprendiz en el ranking.</div>
+        </div>
+      `;
+      this.dom.leaderboardList.innerHTML = '';
+      return;
+    }
 
     // 1. Podio (Top 3)
     const top3 = scores.slice(0, 3);
