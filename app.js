@@ -208,51 +208,89 @@ class AudioManager {
   }
 }
 
-// 3. SISTEMA DE RANKING Y PERSISTENCIA (Inicia en Cero)
+// 3. SISTEMA DE RANKING Y PERSISTENCIA (Sincronización en la Nube en Tiempo Real)
 class RankingManager {
   constructor() {
-    this.storageKey = 'sena_tree_quiz_scores_v2';
-    // Limpiar claves antiguas para asegurar inicio completamente desde cero
-    try {
-      localStorage.removeItem('sena_tree_quiz_leaderboard');
-      localStorage.removeItem('sena_tree_quiz_scores_v1');
-    } catch (e) {}
+    this.storageKey = 'sena_tree_quiz_scores_v3';
+    this.cache = this.getLocalScores();
+    this.apiUrl = '/api/scores';
   }
 
-  getScores() {
+  getLocalScores() {
     try {
       const data = localStorage.getItem(this.storageKey);
-      if (!data) return [];
-      return JSON.parse(data);
+      return data ? JSON.parse(data) : [];
     } catch (e) {
-      console.warn("Error reading ranking:", e);
       return [];
     }
   }
 
-  saveScores(scores) {
+  saveLocalScores(scores) {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(scores));
-    } catch (e) {
-      console.warn("Error saving ranking:", e);
-    }
-  }
-
-  clearScores() {
-    try {
-      localStorage.removeItem(this.storageKey);
     } catch (e) {}
   }
 
-  addEntry(player) {
-    const scores = this.getScores();
-    scores.push(player);
-    // Ordenar por mayor puntaje, luego por menor tiempo
-    scores.sort((a, b) => b.score - a.score || a.time - b.time);
-    // Mantener los 50 mejores
-    const trimmed = scores.slice(0, 50);
-    this.saveScores(trimmed);
-    return trimmed;
+  getScores() {
+    return this.cache;
+  }
+
+  // Cargar puntajes desde la nube (Gist / API Vercel)
+  async fetchCloudScores() {
+    try {
+      const res = await fetch(this.apiUrl, { cache: 'no-store' });
+      if (res.ok) {
+        const scores = await res.json();
+        if (Array.isArray(scores)) {
+          this.cache = scores;
+          this.saveLocalScores(scores);
+          return scores;
+        }
+      }
+    } catch (e) {
+      // Si está offline o en desarrollo local, continúa con la caché
+    }
+    return this.cache;
+  }
+
+  // Guardar puntaje en la nube y localmente
+  async addEntry(player) {
+    // Actualizar inmediatamente la caché local
+    this.cache.push(player);
+    this.cache.sort((a, b) => b.score - a.score || a.time - b.time);
+    this.cache = this.cache.slice(0, 50);
+    this.saveLocalScores(this.cache);
+
+    // Enviar a la nube en segundo plano
+    try {
+      const res = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(player)
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        if (Array.isArray(updated)) {
+          this.cache = updated;
+          this.saveLocalScores(updated);
+          return updated;
+        }
+      }
+    } catch (e) {
+      console.warn("Error guardando en la nube:", e);
+    }
+    return this.cache;
+  }
+
+  // Limpiar puntajes de la nube y de la caché
+  async clearScores() {
+    this.cache = [];
+    this.saveLocalScores([]);
+    try {
+      await fetch(this.apiUrl, { method: 'DELETE' });
+    } catch (e) {
+      console.warn("Error limpiando en la nube:", e);
+    }
   }
 }
 
@@ -357,9 +395,22 @@ class QuizApp {
     this.init();
   }
 
-  init() {
+  async init() {
     this.checkUrlChallenge();
     this.bindEvents();
+    this.renderLeaderboard();
+
+    // Sincronizar inmediatamente con la base de datos en la nube
+    await this.syncWithCloud();
+
+    // Polling en tiempo real cada 4 segundos para que los 16 aprendices se vean aparecer en vivo
+    setInterval(() => {
+      this.syncWithCloud();
+    }, 4000);
+  }
+
+  async syncWithCloud() {
+    await this.ranking.fetchCloudScores();
     this.renderLeaderboard();
   }
 
@@ -434,14 +485,14 @@ class QuizApp {
       this.showToast(enabled ? 'Sonido activado' : 'Sonido silenciado');
     });
 
-    // Reiniciar ranking a 0
+    // Reiniciar ranking a 0 en la nube y local
     const resetBtn = document.getElementById('reset-leaderboard-btn');
     if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        if (confirm('¿Estás seguro de que deseas reiniciar todos los puntajes a cero?')) {
-          this.ranking.clearScores();
+      resetBtn.addEventListener('click', async () => {
+        if (confirm('¿Estás seguro de que deseas reiniciar todos los puntajes a cero para todos los computadores?')) {
+          await this.ranking.clearScores();
           this.renderLeaderboard();
-          this.showToast('🗑️ Puntajes reiniciados a cero');
+          this.showToast('🗑️ Puntajes reiniciados a cero en la nube');
         }
       });
     }
@@ -610,11 +661,11 @@ class QuizApp {
     }
   }
 
-  finishQuiz() {
+  async finishQuiz() {
     clearInterval(this.totalTimerInterval);
     this.dom.progressBar.style.width = '100%';
 
-    // Registrar en Leaderboard
+    // Registrar en Leaderboard (Nube + Local)
     const entry = {
       name: this.playerName,
       avatar: this.playerAvatar,
@@ -623,7 +674,7 @@ class QuizApp {
       time: this.totalSeconds,
       date: new Date().toISOString().split('T')[0]
     };
-    this.ranking.addEntry(entry);
+    await this.ranking.addEntry(entry);
 
     // Cambiar a vista de resultados
     this.dom.quizView.style.display = 'none';
