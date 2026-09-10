@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz: Árboles de Decisión y Clasificación en ML | SENA</title>
+  
+  <!-- SEO y OpenGraph para Previsualización en WhatsApp y Redes -->
+  <meta name="description" content="Quiz interactivo, rápido y fácil sobre Árboles de Decisión y Scikit-Learn en Python. ¡Compite en el ranking y desafía a tus compañeros!">
+  <meta property="og:title" content="🌲 Quiz de Árboles de Decisión en Machine Learning (SENA)">
+  <meta property="og:description" content="¿Puedes superar mi puntaje? Pon a prueba tus conocimientos sobre Gini, Scikit-Learn y nodos de decisión.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#10b981">
+
+  <!-- Favicon con SVG Emoticono -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌲</text></svg>">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- Canvas Flotante de Confeti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    
+    <!-- Barra Superior -->
+    <header class="top-nav">
+      <div class="brand-badge">
+        <span>🌲</span>
+        <span>ML QUIZ • <span class="sena">SENA</span></span>
+      </div>
+      <div class="nav-actions">
+        <button id="sound-toggle-btn" class="icon-btn" title="Activar/Silenciar Sonido" aria-label="Control de sonido">
+          <span id="sound-icon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Banner de Reto Activo (Se activa cuando se abre un enlace de desafío) -->
+    <aside id="challenge-banner" class="challenge-banner" style="display: none;">
+      <div class="challenge-content">
+        <span id="challenge-avatar" class="challenge-avatar">⚡</span>
+        <div class="challenge-text">
+          <h4 id="challenge-title">¡Has recibido un reto!</h4>
+          <p id="challenge-sub">¿Podrás superar su puntaje en este quiz?</p>
+        </div>
+      </div>
+      <span class="challenge-chip">⚔️ MODO DUELO</span>
+    </aside>
+
+    <!-- TARJETA PRINCIPAL -->
+    <main class="main-card">
+
+      <!-- ====================================================================
+           1. VISTA DE BIENVENIDA / INICIO
+           ==================================================================== -->
+      <section id="welcome-view" class="fade-in">
+        <div class="welcome-header">
+          <span class="hero-pill">🐍 Python • Machine Learning</span>
+          <h1>Árboles de Decisión y Clasificación</h1>
+          <p>Un quiz muy fácil, interactivo y didáctico para evaluar los conceptos fundamentales del algoritmo.</p>
+          <div class="presentation-source">
+            📖 Basado en la presentación de la <strong>Instructora Martha Ester Gómez Adasme</strong>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="player-name" class="form-label">Tu Nombre o Apodo:</label>
+          <div class="player-input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" id="player-name" placeholder="Ej: Alexis, Henry, Martha..." maxlength="25" autocomplete="name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Elige tu Avatar de Competencia:</label>
+          <div class="avatar-grid" role="radiogroup">
+            <div class="avatar-opt selected" data-avatar="🌲" role="radio" aria-checked="true">🌲</div>
+            <div class="avatar-opt" data-avatar="⚡" role="radio" aria-checked="false">⚡</div>
+            <div class="avatar-opt" data-avatar="🤖" role="radio" aria-checked="false">🤖</div>
+            <div class="avatar-opt" data-avatar="🎓" role="radio" aria-checked="false">🎓</div>
+            <div class="avatar-opt" data-avatar="🏆" role="radio" aria-checked="false">🏆</div>
+            <div class="avatar-opt" data-avatar="🚀" role="radio" aria-checked="false">🚀</div>
+          </div>
+        </div>
+
+        <div class="quiz-highlights">
+          <div class="highlight-item">
+            <div class="highlight-icon">🎯</div>
+            <div class="highlight-title">10 Preguntas</div>
+            <div class="highlight-sub">Claras y muy fáciles</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">⚡</div>
+            <div class="highlight-title">Bonus Rapidez</div>
+            <div class="highlight-sub">Puntos extra por tiempo</div>
+          </div>
+          <div class="highlight-item">
+            <div class="highlight-icon">📲</div>
+            <div class="highlight-title">Reto WhatsApp</div>
+            <div class="highlight-sub">Comparte tu récord</div>
+          </div>
+        </div>
+
+        <button id="start-quiz-btn" class="btn btn-primary">
+          Comenzar Quiz Ahora 🚀
+        </button>
+      </section>
+
+      <!-- ====================================================================
+           2. VISTA DE PREGUNTAS (EN JUEGO)
+           ==================================================================== -->
+      <section id="quiz-view" style="display: none;" class="fade-in">
+        <div class="quiz-top-bar">
+          <span id="quiz-step" class="quiz-step-badge">Pregunta 1 de 10</span>
+          
+          <div id="quiz-streak" class="quiz-streak-badge" style="display: none;">
+            <span>🔥 Racha</span>
+            <span id="streak-count">x2</span>
+          </div>
+
+          <span id="current-score" class="quiz-score-badge">0 pts</span>
+        </div>
+
+        <div class="progress-container">
+          <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="question-container">
+          <span id="slide-tag" class="slide-tag">Diapositiva 2</span>
+          <h2 id="question-text" class="question-title">Cargando pregunta...</h2>
+        </div>
+
+        <div id="options-container" class="options-grid">
+          <!-- Opciones inyectadas por JS -->
+        </div>
+
+        <!-- Tarjeta de Explicación Inmediata -->
+        <div id="explanation-card" class="explanation-card">
+          <div id="explanation-header" class="explanation-header correct">
+            <span id="explanation-icon">✅</span>
+            <span id="explanation-title">¡Correcto!</span>
+          </div>
+          <p id="explanation-text" class="explanation-text">Explicación breve del concepto.</p>
+        </div>
+
+        <div class="next-btn-container">
+          <button id="next-btn" class="btn btn-primary" style="display: none;">
+            Siguiente Pregunta ➡️
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           3. VISTA DE RESULTADOS
+           ==================================================================== -->
+      <section id="results-view" style="display: none;" class="fade-in">
+        <div class="results-header">
+          <div id="final-trophy" class="trophy-container">🏆</div>
+          <h2 id="final-title">¡Quiz Completado!</h2>
+          <p id="final-subtitle">Has demostrado tus conocimientos en Árboles de Decisión.</p>
+          <span id="final-badge" class="results-badge">Maestro de ML</span>
+        </div>
+
+        <!-- Tarjeta de Duelo (Si vino por link de reto) -->
+        <div id="duel-card" class="duel-card">
+          <div class="duel-title">⚔️ Resultado del Duelo</div>
+          <div class="duel-fighters">
+            <div class="duel-fighter">
+              <span id="duel-user-avatar" class="duel-avatar">🌲</span>
+              <span id="duel-user-name" class="duel-name">Tú</span>
+              <span id="duel-user-score" class="duel-score">1200 pts</span>
+            </div>
+            <div class="duel-vs">VS</div>
+            <div class="duel-fighter">
+              <span id="duel-rival-avatar" class="duel-avatar">⚡</span>
+              <span id="duel-rival-name" class="duel-name">Retador</span>
+              <span id="duel-rival-score" class="duel-score">1100 pts</span>
+            </div>
+          </div>
+          <div id="duel-verdict" class="duel-verdict"></div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <div id="metric-score" class="metric-value emerald">0</div>
+            <div class="metric-label">Puntaje Total</div>
+          </div>
+          <div class="metric-box">
+            <div id="metric-accuracy" class="metric-value cyan">0/10</div>
+            <div class="metric-label">Aciertos</div>
+          </div>
+          <div class="metric-box">
+            <div id="metric-time" class="metric-value amber">0s</div>
+            <div class="metric-label">Tiempo Total</div>
+          </div>
+        </div>
+
+        <!-- Sección de Compartir y Desafío Viral -->
+        <div class="share-section">
+          <h3><span>🚀</span> ¡Reta a tus amigos y compañeros!</h3>
+          <p>Comparte tu puntaje en WhatsApp o copia tu enlace de reto para que intenten superarte en la tabla de posiciones.</p>
+          <div class="share-buttons-row">
+            <button id="whatsapp-share-btn" class="btn btn-whatsapp">
+              <span>📲</span> Compartir en WhatsApp
+            </button>
+            <button id="copy-challenge-btn" class="btn btn-copy">
+              <span>📋</span> Copiar Reto
+            </button>
+          </div>
+        </div>
+
+        <div class="results-secondary-actions">
+          <button id="play-again-btn" class="btn btn-primary">
+            🔄 Jugar Otra Vez
+          </button>
+          <button id="review-answers-btn" class="btn btn-secondary">
+            📝 Ver Explicaciones
+          </button>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           4. TABLA DE POSICIONES (LEADERBOARD / RANKING)
+           ==================================================================== -->
+      <section class="leaderboard-container">
+        <div class="leaderboard-header">
+          <h3><span>🏆</span> Tabla de Posiciones</h3>
+          <span class="leaderboard-badge">TOP APRENDICES</span>
+        </div>
+
+        <!-- Podio Top 3 -->
+        <div id="podium-wrapper" class="podium-wrapper">
+          <!-- Inyectado por JS -->
+        </div>
+
+        <!-- Lista de 4 en adelante -->
+        <div id="leaderboard-list" class="leaderboard-list">
+          <!-- Inyectado por JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- MODAL DE REVISIÓN DE PREGUNTAS -->
+    <div id="review-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>📝 Revisión y Respuestas del Quiz</h3>
+          <button id="close-modal-btn" class="icon-btn" aria-label="Cerrar modal">✕</button>
+        </div>
+        <div id="review-modal-body" class="modal-body">
+          <!-- Inyectado por JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toast" class="toast">
+      <span>✨</span>
+      <span id="toast-message">Mensaje informativo</span>
+    </div>
+
+    <!-- FOOTER CON CRÉDITOS OFICIALES -->
+    <footer class="footer">
+      <p>
+        <strong>Competencia:</strong> Python (Machine Learning) • 
+        <strong>Instructora:</strong> Martha Ester Gómez Adasme
+      </p>
+      <p style="margin-top: 0.35rem;">
+        <strong>Aprendices:</strong> Samuel Gutierrez Franco • Henry Jafet Caballero Mendoza • Juan José Gallego Bran • Emanuel Henao González • Alexis Gómez Pavas
+      </p>
+      <p style="margin-top: 0.35rem; color: var(--text-muted); font-size: 0.76rem;">
+        Centro de Servicios y Gestión Empresarial — SENA
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

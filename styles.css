@@ -1,0 +1,1274 @@
+/* ==========================================================================
+   QUIZ DE ÁRBOLES DE DECISIÓN - ESTILOS MODERNOS Y PREMIUM
+   Inspirado en Machine Learning, Bosques de Decisión y Paleta Neón / Glassmorphism
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+:root {
+  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Colores del Sistema */
+  --bg-dark: #070d18;
+  --bg-card: rgba(15, 23, 42, 0.75);
+  --bg-card-hover: rgba(30, 41, 59, 0.85);
+  --border-glow: rgba(56, 189, 248, 0.2);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Acentos */
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.35);
+
+  --cyan-400: #38bdf8;
+  --cyan-500: #0ea5e9;
+  --cyan-glow: rgba(14, 165, 233, 0.35);
+
+  --purple-400: #c084fc;
+  --purple-500: #a855f7;
+
+  --amber-400: #fbbf24;
+  --rose-500: #f43f5e;
+  --rose-glow: rgba(244, 63, 94, 0.35);
+
+  /* Texto */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* WhatsApp */
+  --whatsapp-green: #25d366;
+  --whatsapp-hover: #22bf5b;
+  --whatsapp-glow: rgba(37, 211, 102, 0.4);
+
+  /* Animaciones */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Fondo decorativo con mallas y auroras de degradado */
+body::before {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: -10%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.15), transparent 70%);
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.15), transparent 70%);
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Canvas para Confeti */
+#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Contenedor Principal */
+.app-container {
+  width: 100%;
+  max-width: 860px;
+  padding: 1.5rem 1rem 3rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Barra superior de navegación / audio / créditos */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--emerald-400);
+}
+
+.brand-badge span.sena {
+  background: linear-gradient(135deg, #10b981, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+  border-color: var(--cyan-400);
+}
+
+/* Banner de Reto Activo (Cuando se abre con link de desafío) */
+.challenge-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(14, 165, 233, 0.25));
+  border: 1px solid var(--emerald-400);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 0 25px var(--emerald-glow);
+  animation: pulseBorder 3s infinite;
+}
+
+@keyframes pulseBorder {
+  0%, 100% { border-color: var(--emerald-400); }
+  50% { border-color: var(--cyan-400); }
+}
+
+.challenge-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.challenge-avatar {
+  font-size: 1.8rem;
+}
+
+.challenge-text h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.challenge-text p {
+  font-size: 0.85rem;
+  color: var(--emerald-400);
+  font-weight: 600;
+}
+
+.challenge-chip {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--emerald-400);
+  color: #fff;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Tarjeta Principal / Panel Glassmorphism */
+.main-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.2rem 2rem;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+/* ==========================================================================
+   VISTA DE INICIO / BIENVENIDA
+   ========================================================================== */
+.welcome-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--emerald-400);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.welcome-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.8rem;
+  background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.welcome-header p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.presentation-source {
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--cyan-400);
+  background: rgba(14, 165, 233, 0.1);
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 8px;
+  border: 1px dashed rgba(14, 165, 233, 0.3);
+}
+
+.form-group {
+  margin-bottom: 1.75rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.player-input-wrapper {
+  position: relative;
+}
+
+.player-input-wrapper input {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  padding-left: 3rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 1.05rem;
+  font-family: var(--font-main);
+  transition: var(--transition-smooth);
+}
+
+.player-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--emerald-400);
+  box-shadow: 0 0 15px var(--emerald-glow);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.player-input-wrapper .input-icon {
+  position: absolute;
+  left: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+/* Selector de Avatares */
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+  gap: 0.75rem;
+}
+
+.avatar-opt {
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 1.7rem;
+  padding: 0.7rem 0.2rem;
+  cursor: pointer;
+  text-align: center;
+  transition: var(--transition-smooth);
+}
+
+.avatar-opt:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.avatar-opt.selected {
+  border-color: var(--cyan-400);
+  background: rgba(14, 165, 233, 0.2);
+  box-shadow: 0 0 16px var(--cyan-glow);
+  transform: scale(1.05);
+}
+
+/* Tarjetas Informativas de Bienvenida */
+.quiz-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.highlight-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 0.75rem;
+  text-align: center;
+}
+
+.highlight-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+}
+
+.highlight-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.highlight-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Botones Principales */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-smooth);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--emerald-glow);
+  width: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(16, 185, 129, 0.5);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--cyan-400);
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--whatsapp-glow);
+  font-weight: 800;
+}
+
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(37, 211, 102, 0.6);
+}
+
+/* ==========================================================================
+   VISTA DEL QUIZ (EN JUEGO)
+   ========================================================================== */
+.quiz-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.quiz-step-badge {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--cyan-400);
+  background: rgba(14, 165, 233, 0.1);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.quiz-streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--amber-400);
+  background: rgba(251, 191, 36, 0.1);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  transition: var(--transition-smooth);
+}
+
+.quiz-streak-badge.active {
+  animation: pulseStreak 0.5s ease;
+}
+
+@keyframes pulseStreak {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
+.quiz-score-badge {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--emerald-400);
+  font-family: var(--font-mono);
+}
+
+/* Barra de Progreso */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 1.75rem;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981, #0ea5e9);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 12px var(--emerald-glow);
+}
+
+/* Tarjeta de Pregunta */
+.question-container {
+  margin-bottom: 2rem;
+}
+
+.slide-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--purple-400);
+  background: rgba(168, 85, 247, 0.12);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.question-title {
+  font-size: clamp(1.2rem, 2.8vw, 1.45rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.35;
+}
+
+/* Opciones de Respuesta */
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.option-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--cyan-400);
+  transform: translateX(4px);
+}
+
+.option-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  color: var(--cyan-400);
+  transition: var(--transition-smooth);
+}
+
+.option-text {
+  flex: 1;
+}
+
+.option-btn.correct {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: var(--emerald-400) !important;
+  color: #fff !important;
+  box-shadow: 0 0 20px var(--emerald-glow);
+}
+
+.option-btn.correct .option-letter {
+  background: var(--emerald-500);
+  color: #fff;
+}
+
+.option-btn.wrong {
+  background: rgba(244, 63, 94, 0.15) !important;
+  border-color: var(--rose-500) !important;
+  color: #fff !important;
+  box-shadow: 0 0 20px var(--rose-glow);
+  animation: shake 0.4s ease;
+}
+
+.option-btn.wrong .option-letter {
+  background: var(--rose-500);
+  color: #fff;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* Tarjeta de Explicación Inmediata */
+.explanation-card {
+  display: none;
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.explanation-card.visible {
+  display: block;
+}
+
+.explanation-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 0.4rem;
+}
+
+.explanation-header.correct {
+  color: var(--emerald-400);
+}
+
+.explanation-header.wrong {
+  color: var(--rose-500);
+}
+
+.explanation-text {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.next-btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.next-btn-container .btn {
+  width: auto;
+  min-width: 170px;
+}
+
+/* ==========================================================================
+   VISTA DE RESULTADOS
+   ========================================================================== */
+.results-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.trophy-container {
+  font-size: 3.5rem;
+  margin-bottom: 0.8rem;
+  display: inline-block;
+  animation: bounceTrophy 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes bounceTrophy {
+  from { transform: translateY(0) rotate(-4deg); }
+  to { transform: translateY(-8px) rotate(4deg); }
+}
+
+.results-header h2 {
+  font-size: clamp(1.8rem, 3.5vw, 2.3rem);
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+
+.results-badge {
+  display: inline-block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--emerald-400);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid var(--emerald-400);
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  margin-top: 0.5rem;
+}
+
+/* Tarjeta de Duelo (Reto vs Retador) */
+.duel-card {
+  display: none;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+  border: 2px solid var(--amber-400);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1.75rem;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.2);
+}
+
+.duel-card.visible {
+  display: block;
+}
+
+.duel-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--amber-400);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.duel-fighters {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.duel-fighter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.duel-avatar {
+  font-size: 2.2rem;
+}
+
+.duel-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+.duel-score {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--emerald-400);
+}
+
+.duel-vs {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--rose-500);
+  background: rgba(244, 63, 94, 0.15);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.duel-verdict {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+/* Grilla de Métricas Finales */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.metric-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 0.8rem;
+  text-align: center;
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.2rem;
+}
+
+.metric-value.emerald { color: var(--emerald-400); }
+.metric-value.cyan { color: var(--cyan-400); }
+.metric-value.amber { color: var(--amber-400); }
+
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Acciones de Compartir y Reto */
+.share-section {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.share-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.share-section p {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  margin-bottom: 1.25rem;
+}
+
+.share-buttons-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 0.85rem;
+}
+
+.btn-copy {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+}
+
+.btn-copy:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--cyan-400);
+}
+
+.results-secondary-actions {
+  display: flex;
+  gap: 0.85rem;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   TABLA DE POSICIONES (RANKING / LEADERBOARD)
+   ========================================================================== */
+.leaderboard-container {
+  margin-top: 2rem;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.leaderboard-header h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.leaderboard-badge {
+  font-size: 0.75rem;
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid var(--cyan-400);
+  color: var(--cyan-400);
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+/* Podio Top 3 */
+.podium-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  align-items: flex-end;
+}
+
+.podium-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 0.6rem;
+  text-align: center;
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.podium-card.first {
+  order: 2;
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.12), rgba(15, 23, 42, 0.8));
+  border-color: var(--amber-400);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+  padding-top: 1.7rem;
+}
+
+.podium-card.second {
+  order: 1;
+  border-color: rgba(203, 213, 225, 0.4);
+}
+
+.podium-card.third {
+  order: 3;
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.podium-medal {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+}
+
+.podium-avatar {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+.podium-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.podium-score {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--emerald-400);
+}
+
+.podium-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Lista de posiciones 4+ */
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ranking-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-smooth);
+}
+
+.ranking-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ranking-row.current-player {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--emerald-400);
+}
+
+.ranking-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ranking-pos {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 24px;
+  text-align: center;
+}
+
+.ranking-avatar {
+  font-size: 1.3rem;
+}
+
+.ranking-player-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.ranking-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ranking-score {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--emerald-400);
+  font-size: 1rem;
+}
+
+.ranking-time {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Modal de Revisión de Preguntas */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  padding: 1.5rem;
+  overflow-y: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background: #0f172a;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  max-width: 650px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.review-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  border-left: 4px solid var(--border-subtle);
+}
+
+.review-item.was-correct {
+  border-left-color: var(--emerald-400);
+}
+
+.review-item.was-wrong {
+  border-left-color: var(--rose-500);
+}
+
+.review-q-num {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.review-q-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.review-answer-status {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.review-answer-status strong {
+  color: #fff;
+}
+
+.review-exp {
+  font-size: 0.82rem;
+  color: var(--cyan-400);
+  margin-top: 0.4rem;
+  background: rgba(14, 165, 233, 0.08);
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+}
+
+/* Toast Notificaciones */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #1e293b;
+  border: 1px solid var(--cyan-400);
+  color: #fff;
+  padding: 0.75rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Footer con Créditos */
+.footer {
+  margin-top: auto;
+  padding-top: 2.5rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.footer strong {
+  color: var(--text-secondary);
+}
+
+.footer a {
+  color: var(--emerald-400);
+  text-decoration: none;
+}
+
+/* Animaciones de Entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.35s ease forwards;
+}
+
+/* ==========================================================================
+   RESPONSIVO PARA MÓVILES (WHATSAPP FRIENDLY)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  .main-card {
+    padding: 1.5rem 1.1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .welcome-header h1 {
+    font-size: 1.7rem;
+  }
+
+  .quiz-highlights {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .share-buttons-row {
+    grid-template-columns: 1fr;
+  }
+
+  .podium-wrapper {
+    gap: 0.4rem;
+  }
+
+  .podium-card {
+    padding: 1rem 0.4rem;
+  }
+
+  .podium-avatar {
+    font-size: 1.6rem;
+  }
+
+  .podium-name {
+    font-size: 0.8rem;
+  }
+
+  .podium-score {
+    font-size: 0.95rem;
+  }
+
+  .results-secondary-actions {
+    flex-direction: column;
+  }
+
+  .results-secondary-actions .btn {
+    width: 100%;
+  }
+
+  .metrics-grid {
+    gap: 0.5rem;
+  }
+
+  .metric-box {
+    padding: 0.8rem 0.4rem;
+  }
+
+  .metric-value {
+    font-size: 1.25rem;
+  }
+}
