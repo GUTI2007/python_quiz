@@ -376,6 +376,20 @@ class QuizApp {
       this.dom.challengeAvatar.textContent = avatar;
       this.dom.challengeTitle.textContent = `¡Desafío activo de ${retador}!`;
       this.dom.challengeSub.textContent = `Marcó ${score} pts. ¿Tienes lo necesario para superarlo?`;
+
+      // Registrar al retador en el ranking para que todos los compañeros se vean en la tabla
+      const existing = this.ranking.getScores();
+      const alreadyHas = existing.some(e => e.name.toLowerCase() === retador.toLowerCase() && e.score === score);
+      if (!alreadyHas) {
+        this.ranking.addEntry({
+          name: retador,
+          avatar: avatar,
+          score: score,
+          correct: Math.min(10, Math.round(score / 140)),
+          time: 40,
+          date: new Date().toISOString().split('T')[0]
+        });
+      }
     }
   }
 
@@ -768,8 +782,8 @@ class QuizApp {
       }
     });
 
-    // 2. Lista de posiciones (4+)
-    const rest = scores.slice(3, 15);
+    // 2. Lista de posiciones (4+) - Soporta holgadamente 16, 30 y hasta 50 aprendices
+    const rest = scores.slice(3, 50);
     this.dom.leaderboardList.innerHTML = '';
 
     rest.forEach((player, i) => {
